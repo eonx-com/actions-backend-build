@@ -10,6 +10,7 @@ RUN apt-get update; \
         docker-compose \
         curl \
         software-properties-common \
+        jq \
         awscli;
 
 COPY entrypoint.sh /entrypoint.sh
