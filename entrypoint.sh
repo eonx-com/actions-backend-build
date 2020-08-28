@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
+export
+
 # Authenticate to ECR
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output 'text')
 ECR_REPOSITORY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
