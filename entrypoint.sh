@@ -13,6 +13,7 @@ fi
 
 # Build and deploy using docker-compose
 echo "Building docker image..."
-TAG="${GITHUB_REF}" IMAGE="${DOCKER_IMAGE}" ECR_REPOSITORY="${ECR_REPOSITORY}" docker-compose -f "${GITHUB_WORKSPACE}/${DOCKER_COMPOSE_YML}" build
-TAG="${GITHUB_REF}" IMAGE="${DOCKER_IMAGE}" ECR_REPOSITORY="${ECR_REPOSITORY}" docker-compose -f "${GITHUB_WORKSPACE}/${DOCKER_COMPOSE_YML}" push
+cd "${GITHUB_WORKSPACE}"
+TAG="${GITHUB_REF}" IMAGE="${DOCKER_IMAGE}" ECR_REPOSITORY="${ECR_REPOSITORY}" docker-compose -f "${DOCKER_COMPOSE_YML}" build
+TAG="${GITHUB_REF}" IMAGE="${DOCKER_IMAGE}" ECR_REPOSITORY="${ECR_REPOSITORY}" docker-compose -f "${DOCKER_COMPOSE_YML}" push
 
