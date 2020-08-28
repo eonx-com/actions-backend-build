@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eox pipefail
+set -eo pipefail
 
 # Authenticate to ECR
 echo "Authenticating to ECR..."
@@ -14,4 +14,3 @@ fi
 echo "Building docker image..."
 TAG="${GITHUB_SHA}" IMAGE="${DOCKER_IMAGE}" ECR_REPOSITORY="${ECR_REPOSITORY}" docker-compose -f "${GITHUB_WORKSPACE}/${DOCKER_COMPOSE_YML}" build
 TAG="${GITHUB_SHA}" IMAGE="${DOCKER_IMAGE}" ECR_REPOSITORY="${ECR_REPOSITORY}" docker-compose -f "${GITHUB_WORKSPACE}/${DOCKER_COMPOSE_YML}" push
-
