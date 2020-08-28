@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
-docker --version
+/usr/bin/docker --version
 exit 0;
 
 # Authenticate to ECR
