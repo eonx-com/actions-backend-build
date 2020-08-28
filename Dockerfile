@@ -6,6 +6,7 @@ RUN apt-get update; \
     apt-get install -y --no-install-recommends \
         apt-transport-https \
         ca-certificates \
+        gpg \
         curl \
         software-properties-common \
         awscli; \
