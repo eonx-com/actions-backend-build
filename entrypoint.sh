@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
-# Start docker daemon
-dockerd
-
 # Authenticate to ECR
 echo "Authenticating to ECR..."
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output 'text')
