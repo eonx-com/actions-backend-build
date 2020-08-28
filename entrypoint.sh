@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
+# Start docker daemon
+dockerd
 
 # Authenticate to ECR
 echo "Authenticating to ECR..."
