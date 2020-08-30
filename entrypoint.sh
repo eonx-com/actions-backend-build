@@ -71,3 +71,32 @@ aws ecs update-service \
   --service "${ECS_TASK_NAME}" \
   --task-definition "${task_definition_arn}" \
   --force-new-deployment
+
+if [[ "${ECS_RUN_TASK}" == "true" ]]; then
+  echo "Retrieving service network configuration..."
+  network_configuration=$(aws ecs describe-services --cluster "${ECS_CLUSTER_NAME}" --services "${ECS_TASK_NAME}" | jq -r '.services[0].networkConfiguration')
+  echo "Invoking task..."
+  task_arn=$(aws ecs run-task \
+    --cluster "${ECS_CLUSTER_NAME}" \
+    --task-definition "${task_definition_arn}" \
+    --network-configuration="${network_configuration}" \
+    --launch-type="FARGATE" | jq -r '.tasks[0].taskArn'
+  )
+  echo "Started Task: ${task_arn}"
+  echo "Waiting for task completion..."
+  aws ecs wait tasks-stopped \
+   --cluster "${ECS_CLUSTER_NAME}" \
+   --tasks "${task_arn}"
+  echo "Checking error code..."
+  exit_code=$(aws ecs describe-tasks \
+    --cluster "${ECS_CLUSTER_NAME}" \
+    --tasks "${task_arn}" | jq -r  '.tasks[0].containers[0].exitCode'
+  )
+  if [[ "${exit_code}" != "0" ]];
+    echo "ERROR: Task did not return expected zero exit code. Exiting"
+    aws ecs describe-tasks \
+      --cluster "${ECS_CLUSTER_NAME}" \
+      --tasks "${task_arn}"
+    exit 1;
+  fi
+fi
