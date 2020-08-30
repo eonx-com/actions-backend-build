@@ -46,7 +46,7 @@ memory=$(json="${container_definition}" jq -n -r 'env.json' | jq -r '.memory')
 
 # Update the container definition
 container_definition_updated=$(aws ecs register-task-definition \
-  --family ${ECS_TASK_NAME} \
+  --family "${ECS_TASK_NAME}" \
   --container-definitions "[${container_definition}]" \
   --volumes "${volumes}" \
   --cpu "${cpu}" \
@@ -74,7 +74,10 @@ aws ecs update-service \
 
 if [[ "${ECS_RUN_TASK}" == "true" ]]; then
   echo "Retrieving service network configuration..."
-  network_configuration=$(aws ecs describe-services --cluster "${ECS_CLUSTER_NAME}" --services "${ECS_TASK_NAME}" | jq -r '.services[0].networkConfiguration')
+  network_configuration=$(aws ecs describe-services \
+    --cluster "${ECS_CLUSTER_NAME}" \
+    --services "${ECS_TASK_NAME}" | jq -r '.services[0].networkConfiguration'
+  )
   echo "Invoking task..."
   task_arn=$(aws ecs run-task \
     --cluster "${ECS_CLUSTER_NAME}" \
@@ -92,7 +95,7 @@ if [[ "${ECS_RUN_TASK}" == "true" ]]; then
     --cluster "${ECS_CLUSTER_NAME}" \
     --tasks "${task_arn}" | jq -r  '.tasks[0].containers[0].exitCode'
   )
-  if [[ "${exit_code}" != "0" ]];
+  if [[ "${exit_code}" != "0" ]]; then
     echo "ERROR: Task did not return expected zero exit code. Exiting"
     aws ecs describe-tasks \
       --cluster "${ECS_CLUSTER_NAME}" \
