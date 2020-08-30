@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eox pipefail
+set -eo pipefail
 
 # Authenticate to ECR
 echo "Authenticating to ECR..."
@@ -78,6 +78,7 @@ if [[ "${ECS_RUN_TASK}" == "true" ]]; then
     --cluster "${ECS_CLUSTER_NAME}" \
     --services "${ECS_TASK_NAME}" | jq -r '.services[0].networkConfiguration'
   )
+
   echo "Invoking task..."
   task_arn=$(aws ecs run-task \
     --cluster "${ECS_CLUSTER_NAME}" \
@@ -85,16 +86,19 @@ if [[ "${ECS_RUN_TASK}" == "true" ]]; then
     --network-configuration="${network_configuration}" \
     --launch-type="FARGATE" | jq -r '.tasks[0].taskArn'
   )
+
   echo "Started Task: ${task_arn}"
   echo "Waiting for task completion..."
   aws ecs wait tasks-stopped \
    --cluster "${ECS_CLUSTER_NAME}" \
    --tasks "${task_arn}"
-  echo "Checking error code..."
+  
+  echo "Checking task exit code..."
   exit_code=$(aws ecs describe-tasks \
     --cluster "${ECS_CLUSTER_NAME}" \
     --tasks "${task_arn}" | jq -r  '.tasks[0].containers[0].exitCode'
   )
+
   if [[ "${exit_code}" != "0" ]]; then
     echo "ERROR: Task did not return expected zero exit code. Exiting"
     aws ecs describe-tasks \
@@ -102,4 +106,5 @@ if [[ "${ECS_RUN_TASK}" == "true" ]]; then
       --tasks "${task_arn}"
     exit 1;
   fi
+
 fi
