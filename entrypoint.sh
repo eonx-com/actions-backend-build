@@ -112,5 +112,6 @@ fi
 parameter_name="/Terraform/ECS/Tag/${ECS_TASK_NAME}"
 echo "Updating SSM image tag: ${parameter_name}..."
 aws ssm put-parameter \
+  --overwrite \
   --name "${parameter_name}" \
   --value "${GITHUB_SHA}";
