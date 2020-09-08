@@ -92,7 +92,7 @@ if [[ "${ECS_RUN_TASK}" == "true" ]]; then
   aws ecs wait tasks-stopped \
    --cluster "${ECS_CLUSTER_NAME}" \
    --tasks "${task_arn}"
-  
+
   echo "Checking task exit code..."
   exit_code=$(aws ecs describe-tasks \
     --cluster "${ECS_CLUSTER_NAME}" \
@@ -108,3 +108,9 @@ if [[ "${ECS_RUN_TASK}" == "true" ]]; then
   fi
 
 fi
+
+parameter_name="/Terraform/ECS/Tag/${ECS_TASK_NAME}"
+echo "Updating SSM image tag: ${parameter_name}..."
+aws ssm put-parameter \
+  --name "${parameter_name}" \
+  --value "${GITHUB_SHA}";
