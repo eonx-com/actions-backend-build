@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
+# If a Github token was supplied use that
+if [[ ! -z "${DOCKER_GITHUB_TOKEN}" ]];
+  export GITHUB_TOKEN="${DOCKER_GITHUB_TOKEN}";
+fi
+
 # Authenticate to ECR
 echo "Authenticating to ECR..."
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output 'text')
