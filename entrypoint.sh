@@ -2,7 +2,7 @@
 set -eo pipefail
 
 # If a Github token was supplied use that
-if [[ ! -z "${DOCKER_GITHUB_TOKEN}" ]];
+if [[ ! -z "${DOCKER_GITHUB_TOKEN}" ]]; then 
   export GITHUB_TOKEN="${DOCKER_GITHUB_TOKEN}";
 fi
 
