@@ -82,6 +82,10 @@ aws ecs update-service \
   --task-definition "${task_definition_arn}" \
   --force-new-deployment
 
+aws ecs wait services-stable \
+  --cluster "${ECS_CLUSTER_NAME}" \
+  --services "${${ECS_TASK_NAME}"
+
 if [[ "${ECS_RUN_TASK}" == "true" ]]; then
   echo "Retrieving service network configuration..."
   network_configuration=$(aws ecs describe-services \
